@@ -5,7 +5,7 @@ from requests.adapters import HTTPAdapter, Retry
 from concurrent.futures import ThreadPoolExecutor
 
 # قراءة المتغيرات من بيئة التشغيل
-TOKEN_BOT = os.getenv('TOKEN')
+BOT_TOKEN = os.getenv('TOKEN')
 CHAT_ID = os.getenv('CHAT_ID')
 SEND_URL = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 
