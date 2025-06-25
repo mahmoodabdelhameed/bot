@@ -51,7 +51,7 @@ def check_username(user):
 
 def main():
     print("🚀 بدء الفحص السريع بخيوط متعددة (10 خيوط)...")
-    with ThreadPoolExecutor(max_workers=30) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         while True:
             user = generate_user()
             executor.submit(check_username, user)
