@@ -1,12 +1,11 @@
-import os
 import random
 import requests
 from requests.adapters import HTTPAdapter, Retry
 from concurrent.futures import ThreadPoolExecutor
 
-# قراءة المتغيرات من بيئة التشغيل
-BOT_TOKEN = os.getenv('TOKEN')
-CHAT_ID = os.getenv('CHAT_ID')
+# التوكن والآيدي مكتوبين مباشرة
+TOKEN = '7219168782:AAFnMyjSBtrcZrB3IWXwh4sFC7mXQcJeeWs'
+CHAT_ID = '6071206764'
 SEND_URL = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 
 COOKIES = {
@@ -20,7 +19,7 @@ COOKIES = {
     'csrftoken': 'v8g7v8WAvkUGKP71vGHbdJS8mYvaPjZF',
     'sessionid': '74983369637%3ASj67m5omVuy3yX%3A6%3AAYdbev8jV-xGINHX0aRLHiHSVGjcukQxXbBue31aQw',
     'wd': '384x716',
-    'rur': '"CLN\\05474983369637\\0541782392488:01fe0246e54e0435f92b61d6824b0d0a1bcb00018bd1439676fb17e021c82"'
+    'rur': '"CLN\\05474983369637\\0541782392488:01fe0246e54e0435f92b61d6824b0d0a1bcb00018bd1439676a5158525816fb17e021c82"'
 }
 
 session = requests.Session()
@@ -52,7 +51,7 @@ def check_username(user):
 
 def main():
     print("🚀 بدء الفحص السريع بخيوط متعددة (10 خيوط)...")
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=30) as executor:
         while True:
             user = generate_user()
             executor.submit(check_username, user)
