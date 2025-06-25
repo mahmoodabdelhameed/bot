@@ -1,61 +1,61 @@
-
-import logging
-from aiogram import Bot, Dispatcher, types, executor
-import yt_dlp
 import os
+import random
+import requests
+from requests.adapters import HTTPAdapter, Retry
+from concurrent.futures import ThreadPoolExecutor
 
-API_TOKEN = 'YOUR_BOT_TOKEN'
-ADMIN_ID = 6071206764
+# قراءة المتغيرات من بيئة التشغيل
+TOKEN = os.getenv('TOKEN')
+CHAT_ID = os.getenv('CHAT_ID')
+SEND_URL = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
 
-logging.basicConfig(level=logging.INFO)
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+COOKIES = {
+    'datr': '_Lo4aPVIhr8NrUn4xrtejdVg',
+    'ig_did': 'C03A340B-7F8A-41B4-A9A3-8B8EEDE332C7',
+    'mid': 'aDi6_AABAAFdw8uX1mZaUFHqy2sO',
+    'ds_user_id': '74983369637',
+    'dpr': '2.8125',
+    'ps_l': '1',
+    'ps_n': '1',
+    'csrftoken': 'v8g7v8WAvkUGKP71vGHbdJS8mYvaPjZF',
+    'sessionid': '74983369637%3ASj67m5omVuy3yX%3A6%3AAYdbev8jV-xGINHX0aRLHiHSVGjcukQxXbBue31aQw',
+    'wd': '384x716',
+    'rur': '"CLN\\05474983369637\\0541782392488:01fe0246e54e0435f92b61d6824b0d0a1bcb00018bd1439676fb17e021c82"'
+}
 
-USERS_FILE = "users.txt"
+session = requests.Session()
+retries = Retry(total=3, backoff_factor=0.1, status_forcelist=[500,502,503,504])
+session.mount('https://', HTTPAdapter(max_retries=retries))
+session.cookies.update(COOKIES)
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+})
 
-def download_video(url):
-    ydl_opts = {
-        'outtmpl': 'video.%(ext)s',
-        'format': 'best',
-        'quiet': True,
-    }
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=True)
-        return ydl.prepare_filename(info)
+def generate_user():
+    chars = "abcdefghijklmnopqrstuvwxyz0123456789"
+    under_index = random.randint(0, 3)
+    return ''.join('_' if i == under_index else random.choice(chars) for i in range(4))
 
-def save_user(user: types.User):
-    if not os.path.exists(USERS_FILE):
-        with open(USERS_FILE, "w") as f:
-            f.write("")
-    with open(USERS_FILE, "r+") as f:
-        users = f.read().splitlines()
-        if str(user.id) not in users:
-            f.write(f"{user.id}
-")
-
-@dp.message_handler(commands=['start'])
-async def send_welcome(message: types.Message):
-    save_user(message.from_user)
-    await message.reply("أرسل الرابط فقط لتحميل المقطع 🚀")
-
-@dp.message_handler(commands=['معلوماتي'])
-async def my_info(message: types.Message):
-    if message.from_user.id != ADMIN_ID:
-        return
-    with open(USERS_FILE, "r") as f:
-        users = f.read().splitlines()
-    await message.reply(f"عدد المستخدمين: {len(users)}")
-
-@dp.message_handler()
-async def handle_url(message: types.Message):
-    url = message.text.strip()
-    await message.reply("🚀")
+def check_username(user):
+    url = f"https://www.instagram.com/{user}/"
     try:
-        file_path = download_video(url)
-        await bot.send_video(message.chat.id, open(file_path, "rb"))
-        os.remove(file_path)
-    except Exception as e:
-        await message.reply("حدث خطأ أثناء التحميل.")
+        r = session.get(url, timeout=4)
+        if r.status_code == 404:
+            print(f"[✅] @{user}")
+            session.post(SEND_URL, data={"chat_id": CHAT_ID, "text": f"🔥 متاح: @{user}"})
+            with open("available.txt", "a") as f:
+                f.write(user + "\n")
+        else:
+            print(f"[❌] {user}")
+    except:
+        pass
 
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+def main():
+    print("🚀 بدء الفحص السريع بخيوط متعددة (10 خيوط)...")
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        while True:
+            user = generate_user()
+            executor.submit(check_username, user)
+
+if __name__ == "__main__":
+    main()
