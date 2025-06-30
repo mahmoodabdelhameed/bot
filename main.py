@@ -116,7 +116,7 @@ def main():
                         }
                         send_message(chat_id, "اختر نوع التحميل:", reply_markup=json.dumps(keyboard))
                     else:
-                        send_message(chat_id, "⏳ جاري التحميل...")
+                        send_message(chat_id, "🚀")
                         file_path = download_media(text, 'video')
                         send_video(chat_id, file_path)
                         os.remove(file_path)
