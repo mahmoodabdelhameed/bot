@@ -1,1 +1,4 @@
 requests
+yt-dlp
+aiogram
+telethon
