@@ -8,7 +8,7 @@ TOKEN = '7686468480:AAHKZJXpYdSQpgjx-PeRaw_as_N4lpkRk98'
 URL = f'https://api.telegram.org/bot{TOKEN}/'
 last_update_id = 0
 
-admin_id = 6071206764  # حط آيديك عشان توصلك الإشعارات
+admin_id = '6071206764'
 
 youtube_cookies = {
     "GPS": "1",
@@ -116,7 +116,7 @@ def main():
                         }
                         send_message(chat_id, "اختر نوع التحميل:", reply_markup=json.dumps(keyboard))
                     else:
-                        send_message(chat_id, "🚀")
+                        send_message(chat_id, "⏳ جاري التحميل...")
                         file_path = download_media(text, 'video')
                         send_video(chat_id, file_path)
                         os.remove(file_path)
