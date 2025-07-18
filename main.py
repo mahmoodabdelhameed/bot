@@ -19,7 +19,7 @@ import time
 import yt_dlp
 import json
 
-TOKEN = '8049964577:AAH8gmb3Wy_IV0CZh6W8Pv3OFyclgQphgoE'
+TOKEN = '7686468480:AAHKZJXpYdSQpgjx-PeRaw_as_N4lpkRk98'
 URL = f'https://api.telegram.org/bot{TOKEN}/'
 last_update_id = 0
 
