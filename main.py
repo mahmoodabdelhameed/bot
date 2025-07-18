@@ -1,18 +1,3 @@
-# ✅ أول شيء: Flask
-from flask import Flask
-import threading
-
-app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return "✅ البوت شغال"
-
-def run_flask():
-    app.run(host="0.0.0.0", port=8080)
-
-flask_thread = threading.Thread(target=run_flask)
-flask_thread.start()
 import requests
 import os
 import time
